@@ -1,5 +1,5 @@
 include_recipe 'collectd'
 
 collectd_plugin 'syslog' do
-  options :log_level => "Info"
+  options :log_level => 'Info'
 end
