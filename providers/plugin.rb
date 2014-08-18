@@ -4,7 +4,7 @@ end
 
 use_inline_resources
 
-action :create do
+action :add do
   template "/etc/collectd/plugins/#{new_resource.name}.conf" do
     owner 'root'
     group 'root'

@@ -23,7 +23,7 @@ end
 
 use_inline_resources
 
-action :create do
+action :add do
   begin
     t = resources(:template => '/etc/collectd/plugins/python.conf')
   rescue ArgumentError, Chef::Exceptions::ResourceNotFound
