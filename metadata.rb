@@ -10,4 +10,3 @@ supports 'debian'
 supports 'ubuntu'
 
 suggests 'apache2'
-suggests 'collectd_plugins'
