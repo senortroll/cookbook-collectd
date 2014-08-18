@@ -1,2 +1,21 @@
-metadata.json
+*~
+*#
+.#*
+\#*#
+.*.sw[a-z]
+*.un~
+pkg/
 
+# Berkshelf
+.vagrant
+.berkshelf/cookbooks
+.berkshelf/tmp
+
+# Bundler
+bin/*
+.bundle/*
+
+.kitchen/
+.kitchen.local.yml
+reports/
+.berkshelf/.cache
