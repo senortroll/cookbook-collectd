@@ -18,7 +18,7 @@
 #
 
 package 'collectd' do
-  package_name node[:collectd][:pkg_name]
+  package_name node['collectd']['pkg_name']
 end
 
 service 'collectd' do
@@ -37,14 +37,14 @@ directory '/etc/collectd/plugins' do
   mode '755'
 end
 
-directory node[:collectd][:base_dir] do
+directory node['collectd']['base_dir'] do
   owner 'root'
   group 'root'
   mode '755'
   recursive true
 end
 
-directory node[:collectd][:plugin_dir] do
+directory node['collectd']['plugin_dir'] do
   owner 'root'
   group 'root'
   mode '755'
@@ -57,7 +57,7 @@ end
     owner 'root'
     group 'root'
     mode '644'
-    notifies :restart, resources(:service => 'collectd')
+    notifies :restart, 'service[collectd]'
   end
 end
 

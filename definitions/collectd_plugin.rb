@@ -30,7 +30,7 @@ define :collectd_plugin, :options => {}, :template => nil, :cookbook => nil do
       cookbook params[:cookbook]
     end
     variables :name => params[:name], :options => params[:options]
-    notifies :restart, resources(:service => 'collectd')
+    notifies :restart, 'service[collectd]'
   end
 end
 
@@ -39,7 +39,7 @@ define :collectd_python_plugin, :options => {}, :module => nil, :path => nil do
     t = resources(:template => '/etc/collectd/plugins/python.conf')
   rescue ArgumentError, Chef::Exceptions::ResourceNotFound
     collectd_plugin 'python' do
-      options :paths => [node[:collectd][:plugin_dir]], :modules => {}
+      options :paths => [node['collectd']['plugin_dir']], :modules => {}
       template 'python_plugin.conf.erb'
       cookbook 'collectd'
     end

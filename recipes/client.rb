@@ -20,7 +20,7 @@
 include_recipe 'collectd'
 
 servers = []
-search(:node, 'recipes:collectd\\:\\:server') do |n|
+search(:node, 'recipes:collectd\\:\\:server') do |n| # ~FC003
   servers << n['fqdn']
 end
 
