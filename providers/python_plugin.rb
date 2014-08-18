@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: collectd
-# Definition:: collectd_plugin
+# Provider:: python_plugin
 #
 # Copyright 2010, Atari, Inc
 #
@@ -17,24 +17,13 @@
 # limitations under the License.
 #
 
-define :collectd_plugin, :options => {}, :template => nil, :cookbook => nil do
-  template "/etc/collectd/plugins/#{params[:name]}.conf" do
-    owner 'root'
-    group 'root'
-    mode '644'
-    if params[:template].nil?
-      source 'plugin.conf.erb'
-      cookbook params[:cookbook] || 'collectd'
-    else
-      source params[:template]
-      cookbook params[:cookbook]
-    end
-    variables :name => params[:name], :options => params[:options]
-    notifies :restart, 'service[collectd]'
-  end
+def whyrun_supported?
+  true
 end
 
-define :collectd_python_plugin, :options => {}, :module => nil, :path => nil do
+use_inline_resources
+
+action :create do
   begin
     t = resources(:template => '/etc/collectd/plugins/python.conf')
   rescue ArgumentError, Chef::Exceptions::ResourceNotFound
@@ -45,6 +34,6 @@ define :collectd_python_plugin, :options => {}, :module => nil, :path => nil do
     end
     retry
   end
-  t.variables[:options][:paths] << params[:path] unless params[:path].nil?
-  t.variables[:options][:modules][params[:module] || params[:name]] = params[:options]
+  t.variables[:options][:paths] << new_resource.path unless new_resource.path.nil?
+  t.variables[:options][:modules][new_resource.module || new_resource.name] = new_resource.options
 end
