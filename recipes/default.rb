@@ -57,6 +57,7 @@ end
     owner 'root'
     group 'root'
     mode '644'
+    variables node['collectd']
     notifies :restart, 'service[collectd]'
   end
 end

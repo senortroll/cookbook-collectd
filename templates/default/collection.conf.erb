@@ -1,2 +1,2 @@
-datadir: "/var/lib/collectd/rrd/"
-libdir: "/usr/lib/collectd/"
+datadir: "<%= ::File.join(@base_dir, 'rrd') %>/"
+libdir: "<%= @plugin_dir %>/"
