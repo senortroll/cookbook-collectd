@@ -11,9 +11,4 @@ RSpec.shared_examples 'an collectd plugin' do |name|
     expect(chef_run).to render_file("/etc/collectd/plugins/#{name}.conf")
   end
 
-  it 'notifies service restart' do
-    resource = chef_run.template("/etc/collectd/plugins/#{name}.conf")
-    expect(resource).to notify('service[collectd]').to(:restart).delayed
-  end
-
 end

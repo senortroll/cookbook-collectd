@@ -36,9 +36,14 @@ describe 'collectd::default' do
           end
         end
 
-        it 'includes default plugins' do
-          chef_run.node['collectd']['default_plugins'].each do |plugin|
+        %w(cpu df disk entropy interface load memory processes swap syslog users).each do |plugin|
+          it "includes #{plugin} plugin" do
             expect(chef_run).to add_collectd_plugin(plugin)
+          end
+
+          it "in plugin #{plugin} notifies collectd to restart" do
+            resource = chef_run.collectd_plugin(plugin)
+            expect(resource).to notify('service[collectd]').to(:restart).delayed
           end
         end
 

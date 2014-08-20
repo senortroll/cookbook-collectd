@@ -13,6 +13,5 @@ action :add do
     cookbook new_resource.cookbook
 
     variables :name => new_resource.name, :options => new_resource.options
-    notifies :restart, 'service[collectd]'
   end
 end
