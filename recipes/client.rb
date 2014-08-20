@@ -25,9 +25,9 @@ search(:node, 'recipes:collectd\\:\\:server') do |n| # ~FC003
 end
 
 if servers.empty?
-  fail 'No servers found. Please configure at least one node with collectd::server.'
-end
-
-collectd_plugin 'network' do
-  options :server => servers
+  Chef::Log.info 'No servers found. Please configure at least one node with collectd::server.'
+else
+  collectd_plugin 'network' do
+    options :server => servers
+  end
 end
