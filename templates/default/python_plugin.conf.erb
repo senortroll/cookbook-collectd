@@ -5,8 +5,8 @@
 </LoadPlugin>
 
 <Plugin python>
-  <% @options[:paths].each do |path| %>
-  ModulePath "<%= path %>"
+  <% @options[:module_paths].each do |module_path| %>
+  ModulePath "<%= module_path %>"
   <% end %>
   <% @options[:modules].each_key do |mod| %>
   Import "<%= mod %>"
