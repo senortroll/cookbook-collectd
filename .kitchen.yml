@@ -17,7 +17,7 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[collectd]
+      - recipe[collectd_test]
     attributes:
 
   - name: collectd_python
