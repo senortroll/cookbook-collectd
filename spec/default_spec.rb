@@ -1,10 +1,6 @@
 require 'spec_helper'
 
 describe 'collectd::default' do
-  before do
-    allow(Chef::Log).to receive(:warn).and_return(true)
-  end
-
   supported_platforms.each do |platform, versions|
     versions.each do |version|
       context "on #{platform.capitalize} #{version}" do
@@ -37,18 +33,12 @@ describe 'collectd::default' do
         end
 
         %w(cpu df disk entropy interface load memory processes swap syslog users).each do |plugin|
-          it "includes #{plugin} plugin" do
+          it "adds #{plugin} plugin by default" do
             expect(chef_run).to add_collectd_plugin(plugin)
-          end
-
-          it "in plugin #{plugin} notifies collectd to restart" do
-            resource = chef_run.collectd_plugin(plugin)
-            expect(resource).to notify('service[collectd]').to(:restart).delayed
           end
         end
 
       end
     end
   end
-
 end
