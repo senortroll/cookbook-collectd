@@ -5,8 +5,11 @@ class CollectdPluginDSL
     @data = {}
   end
 
-  def [](key)
-    @data[key]
+  def run(&block)
+    instance_eval(&block) if block
+    validate!
+
+    @data
   end
 
   def self.allow(option)
@@ -18,7 +21,7 @@ class CollectdPluginDSL
     define_method(:validate!) do
       args.each do |arg|
         fail "collectd_plugin: '#{arg}' is required. But got: #{@data}." unless @data[arg]
-      end
+      end if args
     end
   end
 end

@@ -7,9 +7,7 @@ class CollectdPythonPluginDSL < CollectdPluginDSL
 end
 
 def collectd_python_plugin(name, &block)
-  cp = CollectdPythonPluginDSL.new
-  cp.instance_eval(&block) if block
-  cp.validate!
+  opts = CollectdPythonPluginDSL.new.run(&block)
 
   begin
     res = resources(:collectd_plugin => 'python')
@@ -22,10 +20,14 @@ def collectd_python_plugin(name, &block)
     retry
   end
 
-  if cp[:module_path]
-    res.options[:module_paths] << cp[:module_path]
+  if opts[:module_path]
+    res.options[:module_paths] ||= []
+    res.options[:module_paths] << opts[:module_path]
     res.options[:module_paths].uniq!
   end
 
-  res.options[:modules][name] = cp[:options]
+  res.options[:modules] ||= {}
+  res.options[:modules][name] = opts[:options]
+
+  true
 end
