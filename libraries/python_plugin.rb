@@ -13,8 +13,7 @@ def collectd_python_plugin(name, &block)
     res = resources(:collectd_plugin => 'python')
   rescue ArgumentError, Chef::Exceptions::ResourceNotFound
     collectd_plugin 'python' do
-      options :module_paths => [node['collectd']['plugin_dir']], :modules => {}
-      template 'python_plugin.conf.erb'
+      options :module_paths => [node['collectd']['plugin_dir']]
       notifies :restart, 'service[collectd]', :delayed
     end
     retry
