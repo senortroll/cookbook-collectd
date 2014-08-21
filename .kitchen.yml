@@ -23,3 +23,7 @@ suites:
   - name: collectd_python
     run_list:
       - recipe[collectd_python]
+
+  - name: collectd_custom
+    run_list:
+      - recipe[collectd_test::custom_fake_lwrp]
