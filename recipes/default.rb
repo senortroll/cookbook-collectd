@@ -21,10 +21,6 @@ package 'collectd' do
   package_name node['collectd']['pkg_name']
 end
 
-service 'collectd' do
-  supports :restart => true, :status => true
-end
-
 directory '/etc/collectd' do
   owner 'root'
   group 'root'
@@ -67,6 +63,7 @@ ruby_block 'delete_old_plugins' do
 end
 
 service 'collectd' do
+  supports :restart => true, :status => true
   action [:enable, :start]
 end
 
