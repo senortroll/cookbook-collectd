@@ -28,3 +28,6 @@ HashSyntax:
 
 RescueModifier:
   Enabled: false
+
+Documentation:
+  Enabled: false
