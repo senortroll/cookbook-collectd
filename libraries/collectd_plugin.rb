@@ -51,7 +51,6 @@ class Chef
 
   class Provider
     class CollectdPlugin < Chef::Provider
-
       include Chef::Provider::LWRPBase::InlineResources
 
       def load_current_resource
@@ -86,7 +85,7 @@ class Chef
             mode '644'
             source opts[:template]
             cookbook opts[:cookbook]
-            
+
             variables :name => new_resource.name, :plugin_options => merged_options
           end
         end

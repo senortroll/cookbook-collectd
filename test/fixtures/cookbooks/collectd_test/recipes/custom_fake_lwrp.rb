@@ -1,12 +1,11 @@
 include_recipe 'collectd'
 
-collectd_custom_plugin 'custom_name1' do
-  custom :value => 1000  
+collectd_plugin 'custom' do
+  options :key => "custom_name1",
+          :custom => 1000  
 end
 
-collectd_custom_plugin 'custom_name2' do
-  custom :value => 1000  
-  second :value => 'String'
+collectd_plugin 'custom' do
+  options :key => "custom_name2",
+          :second => "String"
 end
-
-

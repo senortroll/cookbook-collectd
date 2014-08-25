@@ -12,6 +12,6 @@ describe file('/etc/collectd/plugins/custom.conf') do
 
   its(:content) { should match(/<CustomItem "custom_name1">/) }
   its(:content) { should match(/<CustomItem "custom_name2">/) }
-  its(:content) { should match(/Value 1000/) }
+  its(:content) { should match(/Custom 1000/) }
   its(:content) { should match(/Second "String"/) }
 end
