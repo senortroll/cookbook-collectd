@@ -44,13 +44,16 @@ class Chef
       # write_graphite provider class is Chef::Provider::CollectdWriteGraphitePlugin
       def plugin_provider_name
         s = @name.split('_').map { |x| x.capitalize }.join
-        Object.const_get("Chef::Provider::Collectd#{s}Plugin")
+        Object.const_get('Chef').const_get('Provider').const_get("Collectd#{s}Plugin")
       end
     end
   end
 
   class Provider
     class CollectdPlugin < Chef::Provider
+
+      include Chef::Provider::LWRPBase::InlineResources
+
       def load_current_resource
         true
       end
@@ -75,20 +78,17 @@ class Chef
       def action_add(opts = {})
         opts[:template] ||= 'plugin.conf.erb'
         opts[:cookbook] ||= 'collectd'
-        opts[:message] ||= "adding collectd plugin #{new_resource.name}"
 
-        converge_by(opts[:message]) do
-          t = template "/etc/collectd/plugins/#{new_resource.name}.conf" do
+        recipe_eval_with_update_check do
+          template "/etc/collectd/plugins/#{new_resource.name}.conf" do
             owner 'root'
             group 'root'
             mode '644'
             source opts[:template]
             cookbook opts[:cookbook]
-
+            
             variables :name => new_resource.name, :plugin_options => merged_options
           end
-
-          new_resource.updated_by_last_action(t.updated?)
         end
       end
     end

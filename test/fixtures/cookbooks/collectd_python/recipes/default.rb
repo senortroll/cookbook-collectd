@@ -1,11 +1,18 @@
 include_recipe 'collectd'
 
-collectd_python_plugin 'py1' do
-  options :host=>['test_server'], :verbose=>true
-  module_path '/opt/collectd/lib'
+collectd_plugin 'python' do
+  options :module => 'py1',
+          :module_path => '/opt/collectd/lib',
+          :config => {
+            :host => 'test_server',
+            :verbose => true
+          }
 end
 
-collectd_python_plugin 'py2' do
-  options :host=>['test_server2'], :verbose=>false
-  module_path '/opt/collectd/lib'
+collectd_plugin 'python' do
+  options :module => 'py2',#
+          :config => {
+            :host => 'test_server2',
+            :verbose => false
+          }
 end

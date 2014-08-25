@@ -23,4 +23,5 @@ describe file('/etc/collectd/plugins/python.conf') do
   its(:content) { should match %r{Verbose false} }
 
   its(:content) { should match %r{Host "test_server"} }
+  its(:content) { should match %r{Host "test_server2"} }
 end
