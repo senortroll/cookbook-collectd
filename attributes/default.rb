@@ -33,5 +33,3 @@ default['collectd']['fqdn_lookup'] = false
 
 default['collectd']['collectd_web']['path'] = '/srv/collectd_web'
 default['collectd']['collectd_web']['hostname'] = 'collectd'
-
-default['collectd']['default_plugins'] = %w(cpu df disk entropy interface load memory processes swap syslog users)

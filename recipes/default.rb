@@ -66,7 +66,3 @@ service 'collectd' do
   supports :restart => true, :status => true
   action [:enable, :start]
 end
-
-node['collectd']['default_plugins'].each do |plugin|
-  include_recipe "collectd::plugin_#{plugin}"
-end

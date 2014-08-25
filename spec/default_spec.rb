@@ -32,12 +32,6 @@ describe 'collectd::default' do
           end
         end
 
-        %w(cpu df disk entropy interface load memory processes swap syslog users).each do |plugin|
-          it "adds #{plugin} plugin by default" do
-            expect(chef_run).to add_collectd_plugin(plugin)
-          end
-        end
-
       end
     end
   end
