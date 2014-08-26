@@ -29,6 +29,7 @@ class Chef
           prior.instance_variable_set(:@action, 'nothing')
           @previous_options = prior.previous_options
           @previous_options << prior.options
+          @previous_options.compact!
 
         rescue Chef::Exceptions::ResourceNotFound
           return
@@ -71,7 +72,7 @@ class Chef
       # I just concat all options together in array
       # @return [Hash, Array] merged options
       def merged_options
-        new_resource.previous_options + [new_resource.options]
+        (new_resource.previous_options + [new_resource.options]).compact
       end
 
       def action_add(opts = {})
