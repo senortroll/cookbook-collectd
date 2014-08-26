@@ -9,8 +9,12 @@ describe 'collectd::_test_plugins' do
     ChefSpec::Runner.new(step_into: ['collectd_plugin']).converge described_recipe
   end
 
-  all_plugins.each do |plugin|
-    it_should_behave_like 'an collectd plugin', plugin
+  if ENV['COLLECTD_PLUGIN'] # test only one plugin
+    it_should_behave_like 'an collectd plugin', ENV['COLLECTD_PLUGIN']
+  else
+    all_plugins.each do |plugin|
+      it_should_behave_like 'an collectd plugin', plugin
+    end
   end
 
 end

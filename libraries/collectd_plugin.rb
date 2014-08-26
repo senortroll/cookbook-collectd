@@ -4,6 +4,7 @@ class Chef
       identity_attr :name
 
       attr_reader :previous_options
+      attr_reader :resource_name
 
       def initialize(name, run_context = nil)
         super
@@ -52,7 +53,7 @@ class Chef
 
   class Provider
     class CollectdPlugin < Chef::Provider
-      include Chef::Provider::LWRPBase::InlineResources
+      # include Chef::Provider::LWRPBase::InlineResources
 
       def load_current_resource
         true
@@ -79,17 +80,19 @@ class Chef
         opts[:template] ||= 'plugin.conf.erb'
         opts[:cookbook] ||= 'collectd'
 
-        recipe_eval_with_update_check do
-          template "/etc/collectd/plugins/#{new_resource.name}.conf" do
-            owner 'root'
-            group 'root'
-            mode '644'
-            source opts[:template]
-            cookbook opts[:cookbook]
+        t = template "/etc/collectd/plugins/#{new_resource.name}.conf" do
+          owner 'root'
+          group 'root'
+          mode '644'
+          source opts[:template]
+          cookbook opts[:cookbook]
 
-            variables :name => new_resource.name, :plugin_options => merged_options
-          end
+          variables :name => new_resource.name, :plugin_options => merged_options
+          action :nothing
         end
+        t.run_action(:create)
+
+        new_resource.updated_by_last_action(t.updated_by_last_action?)
       end
     end
   end

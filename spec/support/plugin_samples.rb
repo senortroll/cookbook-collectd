@@ -15,7 +15,20 @@ end
 def processes_samples
   [
     /ProcessMatch "carbon-cache" "python.+carbon-cache"/,
-    /Process "sshd"/,
-    /Process "cron"/
+    %r{ProcessMatch "chef-client" "/opt/chef/embedded/bin/ruby /usr/bin/chef-client"},
+    /Process "sshd"/
+  ]
+end
+
+def df_samples
+  [
+    /MountPoint "\/"/,
+    /ValuesPercentage true/
+  ]
+end
+
+def disk_samples
+  [
+    %r{Disk "/sd[a-z]/"}
   ]
 end
