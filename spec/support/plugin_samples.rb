@@ -52,3 +52,10 @@ def write_graphite_samples
     /    LogSendErrors true/
   ]
 end
+
+def exec_samples
+  [
+    /Exec "root:root" "program" "opt1" "opt2" "opt3"/,
+    /Exec "user:group" "myprog"/
+  ]
+end

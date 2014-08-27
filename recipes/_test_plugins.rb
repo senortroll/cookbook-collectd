@@ -15,6 +15,7 @@ collectd_plugin 'amqp' do
     :exchange => 'amq.fanout'
   }
 end
+collectd_plugin 'apcups' # sample not implemented yet
 
 collectd_plugin 'apache' do
   options %w(Instance www1) => {
@@ -22,6 +23,8 @@ collectd_plugin 'apache' do
     :u_r_l => 'http://www1.example.com/mod_status?auto%22'
   }
 end
+
+collectd_plugin 'ascent' # sample not implemented yet
 
 collectd_plugin 'bind' do
   options :u_r_l => 'http://localhost:8053/',
@@ -53,6 +56,9 @@ end
 
 collectd_plugin 'curl_json' # sample not implemented yet
 collectd_plugin 'curl_xml' # sample not implemented yet
+collectd_plugin 'conntrack' # sample not implemented yet
+collectd_plugin 'contextswitch' # sample not implemented yet
+
 collectd_plugin 'dbi' # sample not implemented yet
 
 collectd_plugin 'df' do
@@ -64,10 +70,6 @@ collectd_plugin 'disk' do
   options :disk => '/sd[a-z]/'
 end
 
-collectd_plugin 'apcups' # sample not implemented yet
-collectd_plugin 'ascent' # sample not implemented yet
-collectd_plugin 'conntrack' # sample not implemented yet
-collectd_plugin 'contextswitch' # sample not implemented yet
 collectd_plugin 'dns' # sample not implemented yet
 collectd_plugin 'email' # sample not implemented yet
 collectd_plugin 'entropy'
@@ -187,4 +189,16 @@ end
 collectd_plugin 'write_http' do
   options %w(URL http://example1.com/test1) => { :user => 'user1', :password => 'passw0rd1' },
           %w(URL http://example2.com/test2) => { :user => 'user2', :password => 'passw0rd2' }
+end
+
+collectd_plugin 'exec' do
+  options :exec => [
+    %w(user:group myprog)
+  ]
+end
+
+collectd_plugin 'exec' do
+  options :exec => [
+    %w(root:root program opt1 op2 opt3)
+  ]
 end

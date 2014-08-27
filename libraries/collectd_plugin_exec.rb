@@ -2,7 +2,7 @@ class Chef
   class Provider
     class CollectdExecPlugin < CollectdPlugin
       def action_add
-        fail 'Not Implemented yet'
+        super :template => 'plugin_exec.conf.erb'
       end
     end
   end
