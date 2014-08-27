@@ -29,6 +29,26 @@ end
 
 def disk_samples
   [
-    %r{Disk "/sd[a-z]/"}
+    %r{Disk "/sd\[a-z\]/"}
+  ]
+end
+
+def write_http_samples
+  [
+    %r{<URL "http://example1.com/test1">},
+    %r{<URL "http://example2.com/test2">},
+    /<\/URL>/,
+    /    User "user1"/,
+    /    User "user2"/,
+    /    Password "passw0rd1"/,
+    /    Password "passw0rd2"/
+  ]
+end
+
+def write_graphite_samples
+  [
+    /  <Node "example">/,
+    /  <\/Node>/,
+    /    LogSendErrors true/
   ]
 end

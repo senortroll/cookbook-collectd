@@ -1,22 +1,3 @@
-#
-# Cookbook Name:: collectd
-# Library:: default
-#
-# Copyright 2010, Atari, Inc
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-
 def collectd_key(option)
   return option.to_s.split('_').map { |x| x.capitalize }.join if option.instance_of?(Symbol)
   option.to_s
@@ -31,13 +12,17 @@ def collectd_settings(options, level = 0)
   indent = '  ' * level
   output = []
   options.each_pair do |key, value|
-    if value.is_a? Array
+    if key.is_a? Array
+      if key[1].nil?
+        output << "#{indent}<#{key[0]}>"
+      else
+        output << "#{indent}<#{key[0]} \"#{key[1]}\">"
+      end
+      output << collectd_settings(value, level + 1)
+      output << "#{indent}</#{key[0]}>"
+    elsif value.is_a? Array
       value.each do |subvalue|
         output << "#{indent}#{collectd_key(key)} #{collectd_option(subvalue)}"
-      end
-    elsif value.is_a? Hash
-      value.each_pair do |name, suboptions|
-        output << "#{indent}<#{key} \"#{name}\">\n#{collectd_settings(suboptions, level + 1)}\n#{indent}</#{key}>"
       end
     else
       output << "#{indent}#{collectd_key(key)} #{collectd_option(value)}"
@@ -50,7 +35,7 @@ def get_plugin_name(path)
   path.sub %r{/etc/collectd/plugins/(.*)\.conf}, '\1'
 end
 
-def delete_old_plugins(dir)
+def collectd_delete_old_plugins(dir)
   Dir[::File.join(dir, '*.conf')].each do |path|
     autogen = false
 

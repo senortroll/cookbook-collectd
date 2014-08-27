@@ -59,7 +59,7 @@ end
 end
 
 ruby_block 'delete_old_plugins' do
-  block { delete_old_plugins('/etc/collectd/plugins') }
+  block { collectd_delete_old_plugins('/etc/collectd/plugins') }
 end
 
 service 'collectd' do
