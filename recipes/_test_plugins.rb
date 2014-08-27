@@ -81,6 +81,7 @@ collectd_plugin 'hddtemp' # sample not implemented yet
 collectd_plugin 'ipmi' # sample not implemented yet
 collectd_plugin 'iptables' # sample not implemented yet
 collectd_plugin 'ipvs' # sample not implemented yet
+collectd_plugin 'java' # sample not implemented yet
 collectd_plugin 'libvirt' # sample not implemented yet
 collectd_plugin 'logfile' # sample not implemented yet
 collectd_plugin 'madwifi' # sample not implemented yet
@@ -102,6 +103,7 @@ collectd_plugin 'nut' # sample not implemented yet
 collectd_plugin 'olsrd' # sample not implemented yet
 collectd_plugin 'openvpn' # sample not implemented yet
 collectd_plugin 'pinba' # sample not implemented yet
+collectd_plugin 'perl' # sample not implemented yet
 
 collectd_plugin 'ping' do
   options :host => %w(host1 host2 host3)
@@ -199,6 +201,6 @@ end
 
 collectd_plugin 'exec' do
   options :exec => [
-    %w(root:root program opt1 op2 opt3)
+    %w(root:root program opt1 opt2 opt3)
   ]
 end

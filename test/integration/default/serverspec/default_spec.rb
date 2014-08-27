@@ -25,3 +25,7 @@ end
 describe file('/etc/collectd/plugins/custom.conf') do
   it { should be_file }
 end
+
+describe file('/etc/collectd/plugins/df.conf') do
+  it { should be_file }
+end

@@ -6,3 +6,5 @@ collectd_plugin 'cpu'
 collectd_plugin 'memory'
 collectd_plugin 'memory' # many times
 collectd_plugin 'memory' # ignored
+
+collectd_plugin 'df'
