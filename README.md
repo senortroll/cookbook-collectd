@@ -33,27 +33,14 @@ To use the `collectd::collectd_web` recipe you need the [apache2](https://github
 * `node['collectd']['fqdn_lookup']` -  Defaults to `"false"`.
 * `node['collectd']['collectd_web']['path']` - Location to install collectd\_web to Defaults to `"/srv/collectd_web"`.
 * `node['collectd']['collectd_web']['hostname']` - Server name to use for collectd_web Apache site. Defaults to `"collectd"`.
-* `node['collectd']['default_plugins']` -  Defaults to `"%w(cpu df disk entropy interface load memory processes swap syslog users)"`.
 
 # Recipes
 
 * collectd::client - Installs collectd and configure it to send data to a server.
 * collectd::collectd_web - Installs site for collectd
 * collectd::default - Installs a standalone daemon.
-* collectd::plugin_battery - Installs `battery` collectd plugin.
-* collectd::plugin_cpu - Installs `cpu` collectd plugin.
-* collectd::plugin_df - Installs `df` collectd plugin.
-* collectd::plugin_disk - Installs `disk` collectd plugin.
-* collectd::plugin_entropy - Installs `entropy` collectd plugin.
-* collectd::plugin_interface - Installs `interface` collectd plugin.
-* collectd::plugin_irq - Installs `irq` collectd plugin.
-* collectd::plugin_load - Installs `load` collectd plugin.
-* collectd::plugin_memory - Installs `memory` collectd plugin.
-* collectd::plugin_processes - Installs `processes` collectd plugin.
-* collectd::plugin_swap - Installs `swap` collectd plugin.
-* collectd::plugin_syslog - Installs `syslog` collectd plugin.
-* collectd::plugin_users - Installs `users` collectd plugin.
 * collectd::server - Installs collectd and configure it to recieve data from clients.
+* collectd::_test_plugins - Used for tests. Do not apply on real server. Use it as reference how to use plugin.
 
 # Web frontend
 
@@ -63,23 +50,79 @@ component, so be sure to configure the node with the correct recipes.
 
 # Resources
 
-Several resource are provided to simplfy configuring plugins:
+There is one single resource provided to simplify configuring plugins:
 
 * [collectd_plugin](#collectd_plugin)
-* [collectd_python_plugin](#collectd_python_plugin)
 
 ## collectd_plugin
 
-The `collectd_plugin` define configures and enables standard collect plugins. Example:
+The `collectd_plugin` HWRP configures and enables standard collectd plugins. Example:
 
 ```ruby
-collectd_plugin "interface" do
-  options :interface=>"lo", :ignore_selected=>true
+collectd_plugin 'interface' do
+  options :interface=>'lo', :ignore_selected=>true
 end
 ```
 
-The options hash is converted to collectd-style settings automatically. Any symbol key will be converted to camel-case. In the above example :ignore_selected will be output as the
-key "IgnoreSelected". If the key is already a string, this conversion is skipped. If the value is an array, it will be output as a separate line for each element.
+**You can repeat resource many times from different cookbooks.** Each definition will be stored in array of options under **@previous_options**.
+Templates use this array plus current options to build final options array.
+
+```ruby
+collectd_plugin 'disk' do
+  options :disk => 'sda'
+end
+
+# ... many code lines goes here or in different recipe ...
+
+collectd_plugin 'disk' do
+  options :disk => 'sdb'
+end
+```
+
+Example above will work correctly, you'll got:
+
+```
+<Plugin disk>
+  Disk "sda"
+  Disk "sdb"
+</Plugin
+```
+
+The options hash is converted to collectd-style settings automatically.
+
+* Any symbol key will be converted to camel-case. In the above example :ignore_selected will be output as the key "IgnoreSelected".
+* If the key is already a string, this conversion is skipped.
+* If the key is array, first item means _section_ name, second _section attribute_, value should be hash. You can repeat in inner hash.
+* If the key *is not* array and value is an array, it will be output as a separate line for each element.
+
+Examples:
+
+```ruby
+collectd_plugin 'curl' do
+  options %w(Page stock_quotes) => {
+    'URL' => 'http://finance.google.com/finance?q=NYSE%3AAMD',
+    :user => 'foo',
+    :password => 'bar',
+    %w(Match) => { :regexp => 'blabla.*', :ds_type => 'GaugeAverage' }
+  }
+end
+```
+
+Produces:
+
+```
+<Plugin curl>
+  <Page "stock_quotes">
+	URL "http://finance.google.com/finance?q=NYSE%3AAMD"
+	User "foo"
+	Password "bar"
+	<Match>
+		Regexp "blabla.*"
+		DsType "GaugeAverage"
+	</Match>
+  </Page>
+</Plugin>
+```
 
 
 ### Actions
@@ -88,49 +131,67 @@ key "IgnoreSelected". If the key is already a string, this conversion is skipped
 
 ### Attribute Parameters
 
-- template:  Defaults to <code>"plugin.conf.erb"</code>.
-- cookbook:  Defaults to <code>"collectd"</code>.
 - options:  Defaults to <code>{}</code>.
+- previous_options:  Defaults to <code>[]</code>.
 
-## collectd_python_plugin
+### Provider
 
-The `collectd_python_plugin` configures and enables Python plugins using the collectd-python plugin.
+Some plugins are complex or behaves differently. That's why **each plugin uses its own provider**.
+Provider name is generated dynamically based on plugin name in the following format:
+`write_graphite => Chef::Provider::CollectdWriteGraphitePlugin < Chef::Provider::CollectdPlugin` ('Collectd' + CamelCase(plugin_name) + 'Plugin')
 
-Example:
+You just have to modify child class as you wish.
+
+`Chef::Provider::CollectdPlugin#action_add` method allows options hash. You able to change *cookbook* or *template* file.
+Also it is possible to change behavior on merging few definitions in one:
 
 ```ruby
-collectd_python_plugin "redis" do
-  options :host=>servers, :verbose=>true
+class Chef
+  class Provider
+    class CollectdWriteGraphitePlugin < CollectdPlugin
+	  def action_add
+	    super :template => 'another_template.conf.erb', :cookbook => 'mycookbook'
+      end
+
+      def merged_options
+	    [new_resource.previous_options.first].compact # ignore all next definitions, first wins
+		# [new_resource.options] # ignore all previous definitions, last wins
+		# (new_resource.previous_options + [new_resource.options]).compact # default merge together
+	  end
+	end
+  end
 end
 ```
 
-Options are interpreted in the same way as with `collectd_plugin`. This define will not deploy the plugin script as well, so be sure to setup a cookbook_file resource
+## Complex plugins
+
+Using `collectd_plugin` for python, exec, perl, java modules is allowed, but this define will not deploy the plugin script as well, so be sure to setup a cookbook_file resource
 or other mechanism to handle distribution. Example:
 
 ```ruby
-cookbook_file File.join(node[:collectd][:plugin_dir], "redis.py") do
+cookbook_file File.join(node['collectd']['plugin_dir'], "redis.py") do
   owner "root"
   group "root"
   mode "644"
 end
 ```
 
-### Actions
+# Develop
 
-This fake LWRP, it creates new or updates existing `collectd_plugin[python]` LWRP.
-It has no actions.
+Adding new plugin is pretty easy. For example I want to implement provider for `my_custom` plugin:
 
-### Attribute Parameters
-
-- **options**: options for python module.
-- `module_path`: additional path to search python module.
-
-**Required** parameters are bold.
+1. Create file `libraries/collectd_plugin_my_custom.rb`
+1. Define class `Chef::Provider::CollectdMyCustomPlugin < Chef::Provider::CollectdPlugin`
+1. If it behaves differently override method `action_add` or call `super` with different arguments
+1. If you plan to write some specs look at already written specs and 'an collectd plugin' rspec shared example.
+1. if you define method `my_custom_samples` and return an Array of Regexp, your template will be tested on match these samples.
 
 # License & Author
 
-Author:: Noah Kantrowitz (<noah@coderanger.net>)
-Copyright:: 2010, Atari, Inc
+* Author:: Yauhen Artsiukhou (<jsirex@gmail.com>)
+* Author:: Noah Kantrowitz (<noah@coderanger.net>)
+
+Copyright:: 2014
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

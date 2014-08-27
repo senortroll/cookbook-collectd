@@ -20,14 +20,14 @@ collectd_plugin 'apcups' # sample not implemented yet
 collectd_plugin 'apache' do
   options %w(Instance www1) => {
     # All capitals
-    :u_r_l => 'http://www1.example.com/mod_status?auto%22'
+    'URL' => 'http://www1.example.com/mod_status?auto%22'
   }
 end
 
 collectd_plugin 'ascent' # sample not implemented yet
 
 collectd_plugin 'bind' do
-  options :u_r_l => 'http://localhost:8053/',
+  options 'URL' => 'http://localhost:8053/',
           :parse_time => false,
           :op_codes => true,
           :q_types => true,
@@ -47,7 +47,7 @@ collectd_plugin 'csv'
 
 collectd_plugin 'curl' do
   options %w(Page stock_quotes) => {
-    :u_r_l => 'http://finance.google.com/finance?q=NYSE%3AAMD',
+    'URL' => 'http://finance.google.com/finance?q=NYSE%3AAMD',
     :user => 'foo',
     :password => 'bar',
     %w(Match) => { :regexp => 'blabla.*', :ds_type => 'GaugeAverage' }
