@@ -3,9 +3,9 @@
 LoadPlugin <%= @name %>
 
 <% unless @plugin_options.empty? %>
-<Plugin "<%= @name %>">
+<Plugin <%= @name %>>
   <% @plugin_options.each do |options| %>
-    <%= collectd_settings(options, 1) %>
+<%= collectd_settings(options, 1) %>
   <% end %>
 </Plugin>
 <% end %>
