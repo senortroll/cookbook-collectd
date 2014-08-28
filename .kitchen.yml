@@ -27,3 +27,4 @@ suites:
   - name: collectd_custom
     run_list:
       - recipe[collectd_test::custom_fake_lwrp]
+      - recipe[collectd_test::redefine]
