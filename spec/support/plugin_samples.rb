@@ -49,7 +49,8 @@ def write_graphite_samples
   [
     /  <Node "example">/,
     /  <\/Node>/,
-    /    LogSendErrors true/
+    /    LogSendErrors true/,
+    /    Host "localhost"/
   ]
 end
 

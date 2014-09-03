@@ -179,6 +179,10 @@ end
 collectd_plugin 'users'
 
 collectd_plugin 'write_graphite' do
+  options :bad => 'options ignored'
+end
+
+collectd_plugin 'write_graphite' do
   options %w(Node example) => {
     :host => 'localhost',
     :port => '2003',

@@ -2,14 +2,6 @@ DEPENDENCIES
   collectd
     path: .
     metadata: true
-  collectd_python
-    path: test/fixtures/cookbooks/collectd_python
-  collectd_test
-    path: test/fixtures/cookbooks/collectd_test
 
 GRAPH
   collectd (2.1.0)
-  collectd_python (0.0.0)
-    collectd (>= 0.0.0)
-  collectd_test (0.0.0)
-    collectd (>= 0.0.0)

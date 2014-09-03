@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe 'collectd::_test_plugins' do
+  before do
+    allow(Chef::Log).to receive(:warn).and_return(true)
+  end
+
   cached(:chef_run) do
     ChefSpec::Runner.new.converge described_recipe
   end
