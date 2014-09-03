@@ -4,4 +4,4 @@ DEPENDENCIES
     metadata: true
 
 GRAPH
-  collectd (2.1.0)
+  collectd (2.1.1)
