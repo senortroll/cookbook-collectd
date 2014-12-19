@@ -24,7 +24,7 @@ class Chef
         set_or_return(:options, arg, :kind_of => [Hash])
       end
 
-      def load_prior_resource
+      def load_prior_resource(*args)
         begin
           prior = run_context.resource_collection.lookup(to_s)
           prior.instance_variable_set(:@action, 'nothing')

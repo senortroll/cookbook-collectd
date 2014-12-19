@@ -10,7 +10,7 @@ maintainer_email 'jsirex@gmail.com'
 license          'Apache 2.0'
 description      'Install and configure the collectd monitoring daemon'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '2.1.1'
+version          '2.1.2'
 
 supports 'debian'
 supports 'ubuntu'
