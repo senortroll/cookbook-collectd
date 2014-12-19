@@ -1,3 +1,5 @@
+require 'chef/dsl/recipe'
+
 class Chef
   class Resource
     class CollectdPlugin < Chef::Resource
@@ -51,8 +53,9 @@ class Chef
     end
   end
 
-  class Provider
+  class Provider    
     class CollectdPlugin < Chef::Provider
+      include Chef::DSL::Recipe
       # include Chef::Provider::LWRPBase::InlineResources
 
       def load_current_resource
